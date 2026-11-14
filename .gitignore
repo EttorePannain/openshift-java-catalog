@@ -1,0 +1,20 @@
+# Maven
+target/
+**/target/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# File locali e credenziali
+.env
+.env.*
+settings.json
+kubeconfig
+*.pem
+*.key
+
+# File temporanei
+*.log
+*.tmp
