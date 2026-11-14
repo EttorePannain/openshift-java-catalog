@@ -1,0 +1,37 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: lab-java-git
+  labels:
+    app: catalogo
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/EttorePannain/openshift-java-catalog.git
+      ref: main
+    contextDir: app
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi9/openjdk-17:latest
+      env:
+        - name: MAVEN_ARGS
+          value: "-B -e clean verify -DskipTests=false"
+        - name: MAVEN_OPTS
+          value: "-Xmx512m"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: lab-java:build
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  triggers: []
+  runPolicy: Serial
