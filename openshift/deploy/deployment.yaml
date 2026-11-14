@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogo
+  labels:
+    app: catalogo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalogo
+  template:
+    metadata:
+      labels:
+        app: catalogo
+    spec:
+      containers:
+        - name: catalogo
+          image: image-registry.openshift-image-registry.svc:5000/ettpann-dev/lab-java@sha256:7f89501b63b41884470d7b3271c85ef2037b477c9c8ab49ee5075b4c39528cfa
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
