@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: verifica-oc-cli-
+spec:
+  serviceAccountName: pipeline
+  taskSpec:
+    steps:
+      - name: verifica
+        image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+        command:
+          - /bin/sh
+          - -c
+        args:
+          - |
+            oc version --client

@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: run-build-java-s2i-
+spec:
+  serviceAccountName: pipeline
+  taskRef:
+    name: build-java-s2i
+  params:
+    - name: expected-commit
+      value: 9b2b031388d7583507a5e7197f56eba95f1d60f3

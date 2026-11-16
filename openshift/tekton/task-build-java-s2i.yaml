@@ -1,0 +1,43 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: build-java-s2i
+spec:
+  params:
+    - name: expected-commit
+      type: string
+      description: Commit Git atteso
+  results:
+    - name: build-name
+      description: Nome della Build OpenShift
+    - name: image-digest
+      description: Digest dell'immagine prodotta
+  steps:
+    - name: build
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+      script: |
+        #!/bin/sh
+        set -eu
+
+        echo "Avvio BuildConfig lab-java-git"
+
+        BUILD=$(oc start-build lab-java-git --wait -o name)
+
+        echo "Build: $BUILD"
+
+        PHASE=$(oc get "$BUILD" -o jsonpath='{.status.phase}')
+        COMMIT=$(oc get "$BUILD" -o jsonpath='{.spec.revision.git.commit}')
+        DIGEST=$(oc get "$BUILD" -o jsonpath='{.status.output.to.imageDigest}')
+
+        echo "Phase: $PHASE"
+        echo "Commit: $COMMIT"
+        echo "Digest: $DIGEST"
+
+        test "$PHASE" = "Complete"
+        test "$COMMIT" = "$(params.expected-commit)"
+        test -n "$DIGEST"
+
+        printf '%s' "$BUILD" > "$(results.build-name.path)"
+        printf '%s' "$DIGEST" > "$(results.image-digest.path)"
+
+        echo "Build S2I verificata"
