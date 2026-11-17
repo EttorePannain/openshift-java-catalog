@@ -1,0 +1,130 @@
+apiVersion: build.openshift.io/v1
+kind: Build
+metadata:
+  annotations:
+    openshift.io/build-config.name: lab-java-git
+    openshift.io/build.number: "3"
+    openshift.io/build.pod-name: lab-java-git-3-build
+  creationTimestamp: "2026-11-17T12:09:10Z"
+  generation: 2
+  labels:
+    app: catalogo
+    buildconfig: lab-java-git
+    openshift.io/build-config.name: lab-java-git
+    openshift.io/build.start-policy: Serial
+  name: lab-java-git-3
+  namespace: ettpann-dev
+  ownerReferences:
+  - apiVersion: build.openshift.io/v1
+    controller: true
+    kind: BuildConfig
+    name: lab-java-git
+    uid: 7568e5db-ee20-4617-886d-0810097e8c81
+  resourceVersion: "7241467243"
+  uid: 14864633-b928-4ba4-a873-cdb48160132f
+spec:
+  nodeSelector: null
+  output:
+    pushSecret:
+      name: builder-dockercfg-9x7v7
+    to:
+      kind: ImageStreamTag
+      name: lab-java:build
+  postCommit: {}
+  resources:
+    limits:
+      cpu: "1"
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  revision:
+    git:
+      author:
+        email: ettpann@hotmail.com
+        name: Ettore Pannain
+      commit: b96f37c9d2dd1e9d21a1a463074d5c53407cf8d2
+      committer:
+        email: ettpann@hotmail.com
+        name: Ettore Pannain
+      message: Add Tekton Java deployment task and evidence
+    type: Git
+  serviceAccount: builder
+  source:
+    contextDir: app
+    git:
+      ref: main
+      uri: https://github.com/EttorePannain/openshift-java-catalog.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      env:
+      - name: MAVEN_ARGS
+        value: -B -e clean verify -DskipTests=false
+      - name: MAVEN_OPTS
+        value: -Xmx512m
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi9/openjdk-17:latest
+    type: Source
+  triggeredBy:
+  - message: Manually triggered
+status:
+  completionTimestamp: "2026-11-17T12:10:17Z"
+  conditions:
+  - lastTransitionTime: "2026-11-17T12:09:10Z"
+    lastUpdateTime: "2026-11-17T12:09:10Z"
+    status: "False"
+    type: New
+  - lastTransitionTime: "2026-11-17T12:09:11Z"
+    lastUpdateTime: "2026-11-17T12:09:11Z"
+    status: "False"
+    type: Pending
+  - lastTransitionTime: "2026-11-17T12:10:17Z"
+    lastUpdateTime: "2026-11-17T12:10:17Z"
+    status: "False"
+    type: Running
+  - lastTransitionTime: "2026-11-17T12:10:17Z"
+    lastUpdateTime: "2026-11-17T12:10:17Z"
+    status: "True"
+    type: Complete
+  config:
+    kind: BuildConfig
+    name: lab-java-git
+    namespace: ettpann-dev
+  duration: 67000000000
+  output:
+    to:
+      imageDigest: sha256:9ebfdfe9120fa6acdca5787960f51b8f5e1db36ef0f2c6d113cc59c7c98cbe2a
+  outputDockerImageReference: image-registry.openshift-image-registry.svc:5000/ettpann-dev/lab-java:build
+  phase: Complete
+  stages:
+  - durationMilliseconds: 159
+    name: FetchInputs
+    startTime: "2026-11-17T12:09:11Z"
+    steps:
+    - durationMilliseconds: 159
+      name: FetchGitSource
+      startTime: "2026-11-17T12:09:11Z"
+  - durationMilliseconds: 21892
+    name: PullImages
+    startTime: "2026-11-17T12:09:14Z"
+    steps:
+    - durationMilliseconds: 21892
+      name: PullBaseImage
+      startTime: "2026-11-17T12:09:14Z"
+  - durationMilliseconds: 34796
+    name: Build
+    startTime: "2026-11-17T12:09:35Z"
+    steps:
+    - durationMilliseconds: 34796
+      name: DockerBuild
+      startTime: "2026-11-17T12:09:35Z"
+  - durationMilliseconds: 5020
+    name: PushImage
+    startTime: "2026-11-17T12:10:10Z"
+    steps:
+    - durationMilliseconds: 5020
+      name: PushImage
+      startTime: "2026-11-17T12:10:10Z"
+  startTimestamp: "2026-11-17T12:09:10Z"

@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: java-build-deploy-
+spec:
+  pipelineRef:
+    name: java-build-deploy
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  params:
+    - name: source-commit
+      value: b96f37c9d2dd1e9d21a1a463074d5c53407cf8d2

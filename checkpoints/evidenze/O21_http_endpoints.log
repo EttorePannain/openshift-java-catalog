@@ -1,0 +1,20 @@
+===== /api/info =====
+{"role":"catalogo","message":"Ciao da Java","version":"v2","secretConfigured":false}
+HTTP_STATUS=200
+
+===== /api/products =====
+{"version":"v2","products":[{"status":"AVAILABLE","id":"P001","name":"Corso Java","stock":5},{"status":"SOLD_OUT","id":"P002","name":"Corso OpenShift","stock":0}],"requestId":"1630973c-5753-404d-beb1-dff48a9f92c4"}
+HTTP_STATUS=200
+
+===== /actuator/health =====
+{"groups":["liveness","readiness"],"status":"UP"}
+HTTP_STATUS=200
+
+===== /actuator/health/liveness =====
+{"status":"UP"}
+HTTP_STATUS=200
+
+===== /actuator/health/readiness =====
+{"status":"UP"}
+HTTP_STATUS=200
+

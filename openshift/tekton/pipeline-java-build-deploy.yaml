@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: java-build-deploy
+spec:
+  params:
+    - name: source-commit
+      type: string
+      description: Commit Git da compilare e distribuire
+  tasks:
+    - name: build
+      taskRef:
+        name: build-java-s2i
+      params:
+        - name: expected-commit
+          value: $(params.source-commit)
+
+    - name: deploy
+      runAfter:
+        - build
+      taskRef:
+        name: deploy-java
+      params:
+        - name: source-commit
+          value: $(params.source-commit)
+        - name: image-digest
+          value: $(tasks.build.results.image-digest)

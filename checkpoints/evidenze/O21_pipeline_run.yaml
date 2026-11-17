@@ -1,0 +1,81 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    results.tekton.dev/record: ettpann-dev/results/50ce58e5-53b1-4337-892b-79d1f5237655/records/50ce58e5-53b1-4337-892b-79d1f5237655
+    results.tekton.dev/result: ettpann-dev/results/50ce58e5-53b1-4337-892b-79d1f5237655
+    results.tekton.dev/stored: "true"
+  creationTimestamp: "2026-11-17T12:09:06Z"
+  finalizers:
+  - results.tekton.dev/pipelinerun
+  generateName: java-build-deploy-
+  generation: 1
+  labels:
+    tekton.dev/pipeline: java-build-deploy
+  name: java-build-deploy-5pr47
+  namespace: ettpann-dev
+  resourceVersion: "7241467982"
+  uid: 50ce58e5-53b1-4337-892b-79d1f5237655
+spec:
+  params:
+  - name: source-commit
+    value: b96f37c9d2dd1e9d21a1a463074d5c53407cf8d2
+  pipelineRef:
+    name: java-build-deploy
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1
+    kind: TaskRun
+    name: java-build-deploy-5pr47-build
+    pipelineTaskName: build
+  - apiVersion: tekton.dev/v1
+    kind: TaskRun
+    name: java-build-deploy-5pr47-deploy
+    pipelineTaskName: deploy
+  completionTime: "2026-11-17T12:10:28Z"
+  conditions:
+  - lastTransitionTime: "2026-11-17T12:10:28Z"
+    message: 'Tasks Completed: 2 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    params:
+    - description: Commit Git da compilare e distribuire
+      name: source-commit
+      type: string
+    tasks:
+    - name: build
+      params:
+      - name: expected-commit
+        value: b96f37c9d2dd1e9d21a1a463074d5c53407cf8d2
+      taskRef:
+        kind: Task
+        name: build-java-s2i
+    - name: deploy
+      params:
+      - name: source-commit
+        value: b96f37c9d2dd1e9d21a1a463074d5c53407cf8d2
+      - name: image-digest
+        value: $(tasks.build.results.image-digest)
+      runAfter:
+      - build
+      taskRef:
+        kind: Task
+        name: deploy-java
+  provenance:
+    featureFlags:
+      awaitSidecarReadiness: true
+      coschedule: workspaces
+      enableAPIFields: beta
+      enableProvenanceInStatus: true
+      enforceNonfalsifiability: none
+      maxResultSize: 4096
+      resultExtractionMethod: termination-message
+      runningInEnvWithInjectedSidecars: true
+      verificationNoMatchPolicy: ignore
+  startTime: "2026-11-17T12:09:06Z"
