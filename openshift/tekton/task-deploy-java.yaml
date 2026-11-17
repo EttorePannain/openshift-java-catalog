@@ -1,0 +1,64 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: deploy-java
+spec:
+  params:
+    - name: source-commit
+      type: string
+      description: Commit Git contenente il manifest
+    - name: image-digest
+      type: string
+      description: Digest prodotto dalla build S2I
+  steps:
+    - name: deploy
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+      script: |
+        #!/bin/sh
+        set -eu
+
+        COMMIT="$(params.source-commit)"
+        DIGEST="$(params.image-digest)"
+        IMAGE="image-registry.openshift-image-registry.svc:5000/ettpann-dev/lab-java@$DIGEST"
+
+        SOURCE=/tmp/deployment-source.yaml
+        GENERATED=/tmp/deployment-new.yaml
+
+        echo "Recupero manifest dal commit $COMMIT"
+
+        curl --fail --location --silent --show-error \
+          "https://raw.githubusercontent.com/EttorePannain/openshift-java-catalog/$COMMIT/openshift/deploy/deployment.yaml" \
+          -o "$SOURCE"
+
+        echo "Preparazione nuova immagine: $IMAGE"
+
+        oc set image --local \
+          -f "$SOURCE" \
+          catalogo="$IMAGE" \
+          -o yaml > "$GENERATED"
+
+        echo "Validazione del Deployment"
+        oc apply --dry-run=server -f "$GENERATED"
+
+        echo "Applicazione del Deployment"
+        oc apply -f "$GENERATED"
+
+        echo "Verifica rollout"
+        oc rollout status deployment/catalogo --timeout=180s
+
+        ACTUAL_IMAGE=$(oc get deployment catalogo \
+          -o jsonpath='{.spec.template.spec.containers[0].image}')
+        DESIRED=$(oc get deployment catalogo \
+          -o jsonpath='{.spec.replicas}')
+        AVAILABLE=$(oc get deployment catalogo \
+          -o jsonpath='{.status.availableReplicas}')
+
+        echo "Image: $ACTUAL_IMAGE"
+        echo "Desired: $DESIRED"
+        echo "Available: $AVAILABLE"
+
+        test "$ACTUAL_IMAGE" = "$IMAGE"
+        test "$DESIRED" = "1"
+        test "${AVAILABLE:-0}" -ge 1
+
+        echo "Deployment verificato"

@@ -1,0 +1,13 @@
+Recupero manifest dal commit 9b2b031388d7583507a5e7197f56eba95f1d60f3
+Preparazione nuova immagine: image-registry.openshift-image-registry.svc:5000/ettpann-dev/lab-java@sha256:20e4185082f087d167c569c48f0325e48968b252a304572f236f6f2f195837d7
+Validazione del Deployment
+deployment.apps/catalogo configured (server dry run)
+Applicazione del Deployment
+deployment.apps/catalogo configured
+Verifica rollout
+Waiting for deployment "catalogo" rollout to finish: 0 of 1 updated replicas are available...
+deployment "catalogo" successfully rolled out
+Image: image-registry.openshift-image-registry.svc:5000/ettpann-dev/lab-java@sha256:20e4185082f087d167c569c48f0325e48968b252a304572f236f6f2f195837d7
+Desired: 1
+Available: 1
+Deployment verificato

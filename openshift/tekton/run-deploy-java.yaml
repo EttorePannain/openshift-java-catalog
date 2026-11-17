@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: run-deploy-java-
+spec:
+  serviceAccountName: pipeline
+  taskRef:
+    name: deploy-java
+  params:
+    - name: source-commit
+      value: 9b2b031388d7583507a5e7197f56eba95f1d60f3
+    - name: image-digest
+      value: sha256:20e4185082f087d167c569c48f0325e48968b252a304572f236f6f2f195837d7
