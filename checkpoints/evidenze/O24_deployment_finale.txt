@@ -1,0 +1,2 @@
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+catalogo   1/1     1            1           2d21h
